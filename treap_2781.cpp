@@ -59,7 +59,16 @@ void Node::split(int x, Node*& first, Node*& second)
     }
 }
 
-Node *add(Node *root, Node *new_node) {
+void print_treap(const Node *root) {
+    if (root == nullptr) {
+        return;
+    }
+    print_treap(root->left);
+    cout << "(" << root->key << ", " << root->priority << "):  parent = " << (root->parent ? root->parent->key : 0);
+    print_treap(root->right);
+}
+
+Node *add1(Node *root, Node *new_node) {
     if (root == nullptr) {
         root = new_node;
         return root;
@@ -71,14 +80,36 @@ Node *add(Node *root, Node *new_node) {
     return root;
 }
 
-void print_treap(const Node *root) {
+Node *add(Node *root, Node *new_node) {
     if (root == nullptr) {
-        return;
+        root = new_node;
+        return root;
     }
-    print_treap(root->left);
-    cout << "(" << root->key << ", " << root->priority << ")  ";
-    print_treap(root->right);
+    if (root->priority > new_node->priority) {
+        Node *first = nullptr;
+        Node *second = nullptr;
+        root->split(new_node->key, first, second);
+        if (first != nullptr)
+            first->parent = new_node;
+        if (second != nullptr)
+            second->parent = new_node;
+        new_node->left = first;
+        new_node->right = second;
+        // print_treap(new_node);
+        // cout << endl;
+        return new_node;
+    }
+    if (new_node->key < root->key) {
+        root->left = add(root->left, new_node);
+    } else {
+        root->right = add(root->right, new_node);
+    }
+    if (root->right == new_node || root->left == new_node) {
+        new_node->parent = root;//->right;
+    }
+    return root;
 }
+
 
 int main() {
     Node *root = nullptr;
