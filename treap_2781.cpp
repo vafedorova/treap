@@ -95,8 +95,6 @@ Node *add(Node *root, Node *new_node) {
             second->parent = new_node;
         new_node->left = first;
         new_node->right = second;
-        // print_treap(new_node);
-        // cout << endl;
         return new_node;
     }
     if (new_node->key < root->key) {
@@ -105,7 +103,7 @@ Node *add(Node *root, Node *new_node) {
         root->right = add(root->right, new_node);
     }
     if (root->right == new_node || root->left == new_node) {
-        new_node->parent = root;//->right;
+        new_node->parent = root;
     }
     return root;
 }
